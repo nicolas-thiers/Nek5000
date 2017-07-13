@@ -1,4 +1,6 @@
-# Nek5000 
+# Nek5000 Code
+
+## Version of the code used in the project 
 
 ## Wait, where did everything go?
 
@@ -22,4 +24,3 @@ svn co https://github.com/Nek5000/nek5000.git/trunk/ nek5000
 ## Use Nek5000
 nek5000 works the same way it used to: build cases with `core/makenek` and run them with a script, e.g. `scripts/nekmpi`.
 For more information, see the [user guide](https://nek5000.mcs.anl.gov/documentation/).
-# Nek5000
