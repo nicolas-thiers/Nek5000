@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -N 
+#PBS -l nodes=:ppn=
+cd /user/n/nthiers/Nek5000/bin
+echo > SESSION.NAME
+echo `pwd`'/' >> SESSION.NAME
+rm -f .his1
+rm -f .sch1
+rm -f .log1
+mv .log .log1
+mv .his .his1
+mv .sch .sch1
+rm -f logfile
+rm -f ioinfo
+mpiexec -np -machinefile $PBS_NODEFILE ./nek5000 > .log
+sleep 5
+ln .log logfile
+exit 0;
