@@ -1,14 +1,16 @@
-alias genbox='~/bin/genbox'
-alias genmap='~/bin/genmap'
-alias int_tp='~/bin/int_tp'
-alias n2to3='~/bin/n2to3'
-alias nekmerge='~/bin/nekmegex'
-alias postex='~/bin/postex'
-alias postx='~/bin/postx'
-alias pretex='~/bin/pretex'
-alias prex='~/bin/prex'
-alias re2torea='~/bin/re2torea'
-alias reatore2='~/bin/reatore2'
+toolsPath=tools/bin
+
+alias genbox=$toolsPath/genbox
+alias genmap=$toolsPath/genmap
+alias int_tp=$toolsPath/int_tp
+alias n2to3=$toolsPath/n2to3
+alias nekmerge=$toolsPath/nekmegex
+alias postex=$toolsPath/postex
+alias postx=$toolsPath/postx
+alias pretex=$toolsPath/pretex
+alias prex=$toolsPath/prex
+alias re2torea=$toolsPath/re2torea
+alias reatore2=$toolsPath/reatore2
 
 alias cpn='~/Nek5000/bin/cpn'
 alias mvn='~/Nek5000/bin/mvn'
@@ -53,7 +55,6 @@ export -f nekpbs
 #alias nekpbs='~/Nek5000/bin/nekpbs'
 alias nekvisit='~/Nek5000/bin/nekvisit'
 alias nekvisitmpi='~/Nek5000/bin/nekvisitmpi'
-#alias visnek='~/Nek5000/bin/visnek'
 function visnek() {
 	~/Nek5000/bin/visnek "$@"
 }
