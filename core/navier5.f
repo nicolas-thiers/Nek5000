@@ -1233,7 +1233,7 @@ c---- User test, add <u'T'>
          call avg3    (wums,vz,vx,alpha,beta,ntot,'wum ',ifverbose)
          ! user test... adding <u'T'>, <v'T'> and <w'T'>
          call avg3    (utms,vx,t ,alpha,beta,ntott,'utm ',ifverbose)
-c-----   call avg3    (vtms,vy,t ,alpha,beta,ntott,'vtm ',ifverbose)
+         call avg3    (vtms,vy,t ,alpha,beta,ntott,'vtm ',ifverbose)
          call avg3    (wtms,vz,t ,alpha,beta,ntott,'wtm ',ifverbose)
       endif
 c

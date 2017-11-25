@@ -1,7 +1,14 @@
-toolsPath=tools/bin
+toolsPath='~/Nek5000/tools/bin'
 
-alias genbox=$toolsPath/genbox
-alias genmap=$toolsPath/genmap
+
+function genbox() {
+	~/Nek5000/tools/bin/genbox "$@"
+}
+export -f genbox
+function genmap() {
+	~/Nek5000/tools/bin/genmap "$@"
+}
+export -f genmap
 alias int_tp=$toolsPath/int_tp
 alias n2to3=$toolsPath/n2to3
 alias nekmerge=$toolsPath/nekmegex

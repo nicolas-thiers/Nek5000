@@ -11,10 +11,11 @@
      $               , wrms(ax1,ay1,az1,lelt)
      $               , trms(ax1,ay1,az1,lelt,ldimt)
      $               , prms(ax2,ay2,az2,lelt)
+     $               , uvms(ax1,ay1,az1,lelt)
      $               , vwms(ax1,ay1,az1,lelt)
      $               , wums(ax1,ay1,az1,lelt)
-     $               , uvms(ax1,ay1,az1,lelt)
 c-----		user test for adding <u'T'>
      $               , utms(ax1,ay1,az1,lelt,ldimt)
+     $               , vtms(ax1,ay1,az1,lelt,ldimt)
      $               , wtms(ax1,ay1,az1,lelt,ldimt)
 
