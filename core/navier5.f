@@ -1115,8 +1115,8 @@ c
 c-----------------------------------------------------------------------
       subroutine avg_all
 c
-c     This routine computes running averages E(X),E(X^2),E(X*Y)
-c     and outputs to avg*.fld*, rms*.fld*, and rm2*.fld* for all
+c     This routine computes running averages E(X),E(X^2),E(X^3),E(X^4),
+c     E(X*Y) and outputs to avg*.fld*, rms*.fld*, and rm2*.fld* for all
 c     fields.
 c
 c     E denotes the expected value operator and X,Y two
@@ -1126,6 +1126,9 @@ c     variances and covariances can be computed in a post-processing step:
 c
 c        var(X)   := E(X^X) - E(X)*E(X) 
 c        cov(X,Y) := E(X*Y) - E(X)*E(Y)  
+c        Skew(X)  := E(X*X*X) - 3*E(X)*E(X*X) + 2*E(X)*E(X)*E(X)
+c        Kurt(X)  := E(X*X*X*X) - 4*E(x)*E(X*X*X) + 6*E(X*X)*E(X)*E(X) -
+c                    3*E(X)*E(X)*E(X)*E(X)
 c
 c     Note: The E-operator is linear, in the sense that the expected
 c           value is given by E(X) = 1/N * sum[ E(X)_i ], where E(X)_i
@@ -1175,6 +1178,24 @@ c
          call rzero(prms,nto2)
          do i = 1,ldimt
             call rzero(trms(1,1,1,1,i),ntott)
+         enddo
+
+c----- Usert test, add E(X^3)
+         call rzero(u3ms,ntot)
+         call rzero(v3ms,ntot)
+         call rzero(w3ms,ntot)
+         call rzero(p3ms,nto2)
+         do i = 1,ldimt
+            call rzero(t3ms(1,1,1,1,i),ntott)
+         enddo
+
+c----- Usert test, add E(X^4)
+         call rzero(u4ms,ntot)
+         call rzero(v4ms,ntot)
+         call rzero(w4ms,ntot)
+         call rzero(p4ms,nto2)
+         do i = 1,ldimt
+            call rzero(t4ms(1,1,1,1,i),ntott)
          enddo
 
          call rzero(vwms,ntot)
@@ -1227,6 +1248,28 @@ c---- User test, add <u'T'>
      &                 ntott,'psms',ifverbose)
          enddo
 
+c----  Usert test, compute averages E(X^3) 
+         call avg4    (u3ms,vx,alpha,beta,ntot ,'u3m ',ifverbose)
+         call avg4    (v3ms,vy,alpha,beta,ntot ,'v3m ',ifverbose)
+         call avg4    (w3ms,vz,alpha,beta,ntot ,'w3m ',ifverbose)
+         call avg4    (p3ms,pr,alpha,beta,nto2 ,'pr3m',ifverbose)
+         call avg4    (t3ms,t ,alpha,beta,ntott,'t3m ',ifverbose)
+         do i = 2,ldimt
+            call avg4 (t3ms(1,1,1,1,i),t(1,1,1,1,i),alpha,beta,
+     &                 ntott,'ps3m',ifverbose)
+         enddo
+
+c----  Usert test, compute averages E(X^4) 
+         call avg5    (u4ms,vx,alpha,beta,ntot ,'u4m ',ifverbose)
+         call avg5    (v4ms,vy,alpha,beta,ntot ,'v4m ',ifverbose)
+         call avg5    (w4ms,vz,alpha,beta,ntot ,'w4m ',ifverbose)
+         call avg5    (p4ms,pr,alpha,beta,nto2 ,'pr4m',ifverbose)
+         call avg5    (t4ms,t ,alpha,beta,ntott,'t4m ',ifverbose)
+         do i = 2,ldimt
+            call avg5 (t4ms(1,1,1,1,i),t(1,1,1,1,i),alpha,beta,
+     &                 ntott,'ps4m',ifverbose)
+         enddo
+
          ! compute averages E(X*Y) (for now just for the velocities)
          call avg3    (uvms,vx,vy,alpha,beta,ntot,'uvm ',ifverbose)
          call avg3    (vwms,vy,vz,alpha,beta,ntot,'vwm ',ifverbose)
@@ -1245,6 +1288,10 @@ c-----------------------------------------------------------------------
 
          call outpost2(uavg,vavg,wavg,pavg,tavg,ldimt,'avg')
          call outpost2(urms,vrms,wrms,prms,trms,ldimt,'rms')
+c----  User test, output E(X^3),E(X^4)
+         call outpost2(u3ms,v3ms,w3ms,p3ms,t3ms,ldimt,'rm4')
+         call outpost2(u4ms,v4ms,w4ms,p4ms,t4ms,ldimt,'rm5')
+c----  End test
          call outpost (uvms,vwms,wums,pavg,tavg,      'rm2')
          call outpost (utms,vtms,wtms,pavg,tavg,      'rm3')
          atime = 0.
@@ -1298,6 +1345,52 @@ c
          if (nio.eq.0) write(6,1) istep,time,avgmin,avgmax
      $                           ,alpha,beta,name
     1    format(i9,1p5e13.5,1x,a4,' av2mnx')
+      endif
+c
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine avg4(avg,f,alpha,beta,n,name,ifverbose)
+      include 'SIZE'
+      include 'TSTEP'
+c
+      real avg(n),f(n)
+      character*4 name
+      logical ifverbose
+c
+      do k=1,n
+         avg(k) = alpha*avg(k) + beta*f(k)*f(k)*f(k)
+      enddo
+c
+      if (ifverbose) then
+         avgmax = glmax(avg,n)
+         avgmin = glmin(avg,n)
+         if (nio.eq.0) write(6,1) istep,time,avgmin,avgmax
+     $                           ,alpha,beta,name
+    1    format(i9,1p5e13.5,1x,a4,' av4mnx')
+      endif
+c
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine avg5(avg,f,alpha,beta,n,name,ifverbose)
+      include 'SIZE'
+      include 'TSTEP'
+c
+      real avg(n),f(n)
+      character*4 name
+      logical ifverbose
+c
+      do k=1,n
+         avg(k) = alpha*avg(k) + beta*f(k)*f(k)*f(k)*f(k)
+      enddo
+c
+      if (ifverbose) then
+         avgmax = glmax(avg,n)
+         avgmin = glmin(avg,n)
+         if (nio.eq.0) write(6,1) istep,time,avgmin,avgmax
+     $                           ,alpha,beta,name
+    1    format(i9,1p5e13.5,1x,a4,' av5mnx')
       endif
 c
       return
