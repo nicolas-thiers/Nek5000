@@ -5,7 +5,7 @@ echo	"#SBATCH -n "$2 								>> $1.batch
 echo	"#SBATCH --ntasks-per-node="$3 							>> $1.batch
 echo	"#SBATCH --output="$4".out"							>> $1.batch
 echo	"#SBATCH --error="$4".err"							>> $1.batch
-echo	"#SBATCH --mail-user=nicolas.thiers@alumnos.usm.cl"				>> $1.batch
+echo	"#SBATCH --mail-user=nicolas.thiers@usm.cl"					>> $1.batch
 echo	"#SBATCH --mail-type=ALL"							>> $1.batch
 echo	"module load intel impi"							>> $1.batch
 echo  	"cd `pwd`"                                                  			>> $1.batch
