@@ -59,7 +59,10 @@ function nekpbs() {
 	~/Nek5000/bin/nekpbs "$@"
 }
 export -f nekpbs
-#alias nekpbs='~/Nek5000/bin/nekpbs'
+function nekslurm() {
+	~/Nek5000/bin/nekslurm "$@"
+}
+export -f nekslurm
 alias nekvisit='~/Nek5000/bin/nekvisit'
 alias nekvisitmpi='~/Nek5000/bin/nekvisitmpi'
 function visnek() {
