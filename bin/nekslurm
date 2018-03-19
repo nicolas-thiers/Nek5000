@@ -1,0 +1,35 @@
+echo	"#!/bin/bash"									>  $1.batch
+echo	"#SBATCH --job-name="$4								>> $1.batch
+echo	"#SBATCH --partition="$5							>> $1.batch
+echo	"#SBATCH -n "$2 								>> $1.batch
+echo	"#SBATCH --ntasks-per-node="$3 							>> $1.batch
+echo	"#SBATCH --output="$4".out"							>> $1.batch
+echo	"#SBATCH --error="$4".err"							>> $1.batch
+echo	"#SBATCH --mail-user=nicolas.thiers@usm.cl"					>> $1.batch
+echo	"#SBATCH --mail-type=ALL"							>> $1.batch
+echo	"module load intel impi"							>> $1.batch
+echo  	"cd `pwd`"                                                  			>> $1.batch
+echo  	"echo" $1      ">"  SESSION.NAME                          			>> $1.batch
+echo  	"echo \`pwd\`'/' >> SESSION.NAME"                         			>> $1.batch
+echo  	"rm -f "$1".his1"                                            			>> $1.batch
+echo  	"rm -f  "$1".sch1"                                            			>> $1.batch
+echo  	"rm -f  "$1".log1"                                            			>> $1.batch
+echo  	"mv "$1".log "$1".log1"                                         		>> $1.batch
+echo  	"mv "$1".his "$1".his1"                                         		>> $1.batch
+echo  	"mv "$1".sch "$1".sch1"                                         		>> $1.batch
+echo  	"rm -f logfile"                                             			>> $1.batch
+echo  	"rm -f ioinfo"                                              			>> $1.batch
+echo  	"sleep 5"
+
+echo 	"srun ./nek5000" $1 ">" $1".log"		 				>> $1.batch
+#echo  	"mpiexec -np "$2" ./nek5000 "$1" > "$1".log"                                     >> $1.batch
+
+echo  sleep 5                                                   			>> $1.batch
+echo  ln $1.log logfile                                         			>> $1.batch
+echo  "exit 0;"                                                 			>> $1.batch
+
+sbatch $1.batch
+sleep 1
+watch -n 1 squeue
+#watch -n 1 qstat -u nthiers
+

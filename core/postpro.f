@@ -79,6 +79,53 @@ c           eigenvalues in ascending order.
 
       return
       end
+c---- User Test --------------------------------------------------------
+      subroutine Q_crit(Q)
+c
+c     Compute Q-criteria vortex 
+c
+      include 'SIZE'
+      include 'TOTAL'
+
+      real Q(lx1,ly1,lz1,1)
+
+      parameter (lxyz=lx1*ly1*lz1)
+
+      real gije(lxyz,ldim,ldim)
+      real Qc(ldim,ldim),ss(ldim,ldim),oo(ldim,ldim),w(ldim,ldim)
+      real lam(ldim)
+
+      nxyz = nx1*ny1*nz1
+      n    = nxyz*nelv
+
+      do ie=1,nelv
+        ! Compute velocity gradient tensor
+        call comp_gije(gije,vx(1,1,1,ie),vy(1,1,1,ie),vz(1,1,1,ie),ie)
+
+        do l=1,nxyz
+          ! decompose into symm. and antisymm. part
+          do j=1,ndim
+            do i=1,ndim
+              ss(i,j) = 0.5*(gije(l,i,j)+gije(l,j,i))
+              oo(i,j) = 0.5*(gije(l,i,j)-gije(l,j,i))
+            enddo
+          enddo
+
+          call rzero(Q,ldim*ldim)
+          n_oo = gl2norm(oo,lxyz)          
+          n_ss = gl2norm(ss,lxyz)
+          Q(l,1,1,ie) = 0.5*(n_oo(l)**2-n_ss(l)**2)
+         enddo
+      enddo
+
+      ! smooth field
+      wght = 0.5 
+      ncut = 1
+      call filter_s0(Q,wght,ncut,'vortx') 
+
+      return
+      end
+c---- End User Test ----------------------------------------------------
 c-----------------------------------------------------------------------
       subroutine find_lam3(lam,aa,w,ndim,ierr)
       real aa(ndim,ndim),lam(ndim),w(ndim,ndim),lam2
