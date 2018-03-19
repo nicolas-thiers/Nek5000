@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 # These options are VisIt options that are handled in the code.
 # -dir <VisIt directory> -options <VisIt Options> -trace <VisIt trace file>
