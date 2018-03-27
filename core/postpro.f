@@ -80,49 +80,74 @@ c           eigenvalues in ascending order.
       return
       end
 c---- User Test --------------------------------------------------------
-      subroutine Q_crit(Q)
+      subroutine compute_invariants(Qa,Ra,Qs,Rs,Qw,Rw)
 c
-c     Compute Q-criteria vortex 
+c     Generate Lambda-2 vortex of Jeong & Hussein, JFM '95
 c
       include 'SIZE'
       include 'TOTAL'
 
-      real Q(lx1,ly1,lz1,1)
+      real Qa(lx1,ly1,lz1,1)
+      real Ra(lx1,ly1,lz1,1)
+      real Qs(lx1,ly1,lz1,1)
+      real Rs(lx1,ly1,lz1,1)
+      real Qw(lx1,ly1,lz1,1)
+      real Rw(lx1,ly1,lz1,1)
 
       parameter (lxyz=lx1*ly1*lz1)
 
       real gije(lxyz,ldim,ldim)
-      real Qc(ldim,ldim),ss(ldim,ldim),oo(ldim,ldim),w(ldim,ldim)
+      real vv(ldim,ldim),ss(ldim,ldim),oo(ldim,ldim),w(ldim,ldim)
       real lam(ldim)
 
       nxyz = nx1*ny1*nz1
       n    = nxyz*nelv
 
       do ie=1,nelv
-        ! Compute velocity gradient tensor
-        call comp_gije(gije,vx(1,1,1,ie),vy(1,1,1,ie),vz(1,1,1,ie),ie)
+         ! Compute velocity gradient tensor
+         call comp_gije(gije,vx(1,1,1,ie),vy(1,1,1,ie),vz(1,1,1,ie),ie)
 
-        do l=1,nxyz
-          ! decompose into symm. and antisymm. part
-          do j=1,ndim
+         do l=1,nxyz
+            ! decompose into symm. and antisymm. part
+            do j=1,ndim
             do i=1,ndim
-              ss(i,j) = 0.5*(gije(l,i,j)+gije(l,j,i))
-              oo(i,j) = 0.5*(gije(l,i,j)-gije(l,j,i))
+               ss(i,j) = 0.5*(gije(l,i,j)+gije(l,j,i))
+               oo(i,j) = 0.5*(gije(l,i,j)-gije(l,j,i))
             enddo
-          enddo
+            enddo
+         
+            call rzero(vv,ldim*ldim)
+            do j=1,ndim
+            do i=1,ndim
+            do k=1,ndim
+               vv(i,j) = vv(i,j) + ss(i,k)*ss(k,j) + oo(i,k)*oo(k,j)
+            enddo
+            enddo
+            enddo
 
-          call rzero(Q,ldim*ldim)
-          n_oo = gl2norm(oo,lxyz)          
-          n_ss = gl2norm(ss,lxyz)
-          Q(l,1,1,ie) = 0.5*(n_oo(l)**2-n_ss(l)**2)
+c           Solve eigenvalue problemand sort 
+c           eigenvalues in ascending order.
+            call find_lam3(lam,vv,w,ndim,ierr)
+            Qa(l,1,1,ie) = lam(1)*lam(2)+lam(2)*lam(3)+lam(3)*lam(1)
+            Ra(l,1,1,ie) = lam(1)*lam(2)*lam(3)
+            call find_lam3(lam,ss,w,ndim,ierr)
+            Qs(l,1,1,ie) = lam(1)*lam(2)+lam(2)*lam(3)+lam(3)*lam(1)
+            Rs(l,1,1,ie) = lam(1)*lam(2)*lam(3)
+            call find_lam3(lam,oo,w,ndim,ierr)
+            Qw(l,1,1,ie) = lam(1)*lam(2)+lam(2)*lam(3)+lam(3)*lam(1)
+            Rw(l,1,1,ie) = lam(1)*lam(2)*lam(3)
          enddo
       enddo
 
       ! smooth field
       wght = 0.5 
       ncut = 1
-      call filter_s0(Q,wght,ncut,'vortx') 
-
+      call filter_s0(Qa,wght,ncut,'vortx') 
+      call filter_s0(Ra,wght,ncut,'vortx') 
+      call filter_s0(Qs,wght,ncut,'vortx') 
+      call filter_s0(Rs,wght,ncut,'vortx') 
+      call filter_s0(Qw,wght,ncut,'vortx') 
+      call filter_s0(Rw,wght,ncut,'vortx') 
       return
       end
 c---- End User Test ----------------------------------------------------
