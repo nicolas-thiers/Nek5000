@@ -1113,7 +1113,7 @@ c
       return
       end
 c-----------------------------------------------------------------------
-      subroutine avg_all
+      subroutine avg_all(tx,ty,tz,Qa,Ra,Qs,Rs,Qw,Rw)
 c
 c     This routine computes running averages E(X),E(X^2),E(X^3),E(X^4),
 c     E(X*Y) and outputs to avg*.fld*, rms*.fld*, and rm2*.fld* for all
@@ -1143,6 +1143,8 @@ c
       save    icalld
       data    icalld  /0/
 
+      write(*,*) "aqui..."
+
       if (ax1.ne.lx1 .or. ay1.ne.ly1 .or. az1.ne.lz1) then
          if(nid.eq.0) write(6,*)
      $     'ABORT: wrong size of ax1,ay1,az1 in avg_all(), check SIZE!'
@@ -1170,7 +1172,22 @@ c
          call rzero(pavg,nto2)
          do i = 1,ldimt
             call rzero(tavg(1,1,1,1,i),ntott)
+c>>>>>>> Usert test, add E(X) for temperature gradients >>>>>>>>>>>>
+            call rzero(Txvg(1,1,1,1,i),ntott)
+            call rzero(Tyvg(1,1,1,1,i),ntott)
+            call rzero(Tzvg(1,1,1,1,i),ntott)
+c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          enddo
+
+c>>>>>>> Usert test, add E(X) for velocity gradient invariants >>>>>
+         call rzero(I1,ntot)
+         call rzero(Qavg,ntot)
+         call rzero(Ravg,ntot)
+         call rzero(Qsvg,ntot)
+         call rzero(Rsvg,ntot)
+         call rzero(Qwvg,ntot)
+         call rzero(Rwvg,ntot)
+c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
          call rzero(urms,ntot)
          call rzero(vrms,ntot)
@@ -1178,9 +1195,20 @@ c
          call rzero(prms,nto2)
          do i = 1,ldimt
             call rzero(trms(1,1,1,1,i),ntott)
+c>>>>>>> Usert test, add E(X^2) for temperature gradients >>>>>>>>>>>>
+c           call rzero(Txms(1,1,1,1,i),ntott)
+c           call rzero(Tyms(1,1,1,1,i),ntott)
+c           call rzero(Tzms(1,1,1,1,i),ntott)
+c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          enddo
-
-c----- Usert test, add E(X^3)
+c>>>>>>> Usert test, add E(X) for velocity gradient invariants >>>>>
+         call rzero(Qams,ntot)
+         call rzero(Rams,ntot)
+         call rzero(Qsms,ntot)
+         call rzero(Rsms,ntot)
+         call rzero(Qwms,ntot)
+         call rzero(Rwms,ntot)
+         ! Usert test, add E(X^3)                                     
          call rzero(u3ms,ntot)
          call rzero(v3ms,ntot)
          call rzero(w3ms,ntot)
@@ -1188,8 +1216,7 @@ c----- Usert test, add E(X^3)
          do i = 1,ldimt
             call rzero(t3ms(1,1,1,1,i),ntott)
          enddo
-
-c----- Usert test, add E(X^4)
+         ! Usert test, add E(X^4)                                     
          call rzero(u4ms,ntot)
          call rzero(v4ms,ntot)
          call rzero(w4ms,ntot)
@@ -1197,16 +1224,18 @@ c----- Usert test, add E(X^4)
          do i = 1,ldimt
             call rzero(t4ms(1,1,1,1,i),ntott)
          enddo
+c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
          call rzero(vwms,ntot)
          call rzero(wums,ntot)
          call rzero(uvms,ntot)
-c---- User test, add <u'T'>
+c>>>>>>> Usert test, add <u'T'> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
          do i = 1,ldimt
             call rzero(utms(1,1,1,1,i),ntott)
+            call rzero(vtms(1,1,1,1,i),ntott)
             call rzero(wtms(1,1,1,1,i),ntott)
          enddo
-
+c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
       endif
 
@@ -1227,28 +1256,56 @@ c---- User test, add <u'T'>
          beta  = dtime/atime
          alpha = 1.-beta
          ! compute averages E(X)
+         write(*,*) "avg1..."
          call avg1    (uavg,vx,alpha,beta,ntot ,'um  ',ifverbose)
          call avg1    (vavg,vy,alpha,beta,ntot ,'vm  ',ifverbose)
          call avg1    (wavg,vz,alpha,beta,ntot ,'wm  ',ifverbose)
          call avg1    (pavg,pr,alpha,beta,nto2 ,'prm ',ifverbose)
          call avg1    (tavg,t ,alpha,beta,ntott,'tm  ',ifverbose)
+c>>>>>>> Compute averages for temperatures gradients >>>>>>>>>>>>>>>
+         call avg1    (Txvg,tx,alpha,beta,ntott,'Txvg',ifverbose)
+         call avg1    (Tyvg,ty,alpha,beta,ntott,'Tyvg',ifverbose)
+         call avg1    (Tzvg,tz,alpha,beta,ntott,'Tzvg',ifverbose)
+         ! Compute averages for gradient velocity invariants        
+         call avg1    (Qavg,Qa,alpha,beta,ntot,'Qavg',ifverbose)
+         call avg1    (Ravg,Ra,alpha,beta,ntot,'Qsvg',ifverbose)
+         call avg1    (Qsvg,Qs,alpha,beta,ntot,'Ravg',ifverbose)
+         call avg1    (Rsvg,Rs,alpha,beta,ntot,'Rsvg',ifverbose)
+         call avg1    (Qwvg,Qw,alpha,beta,ntot,'Qwvg',ifverbose)
+         call avg1    (Rwvg,Rw,alpha,beta,ntot,'Rwvg',ifverbose)
+c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          do i = 2,ldimt
             call avg1 (tavg(1,1,1,1,i),t(1,1,1,1,i),alpha,beta,
      &                 ntott,'psav',ifverbose)
          enddo
 
          ! compute averages E(X^2) 
+         write(*,*) "avg2..."
          call avg2    (urms,vx,alpha,beta,ntot ,'ums ',ifverbose)
          call avg2    (vrms,vy,alpha,beta,ntot ,'vms ',ifverbose)
          call avg2    (wrms,vz,alpha,beta,ntot ,'wms ',ifverbose)
          call avg2    (prms,pr,alpha,beta,nto2 ,'prms',ifverbose)
          call avg2    (trms,t ,alpha,beta,ntott,'tms ',ifverbose)
+c>>>>>>> Compute averages for temperatures gradients ^2 >>>>>>>>>>>>
+c        call avg2    (Txms,tx,alpha,beta,ntott,'Txms',ifverbose)
+c        call avg2    (Tyms,ty,alpha,beta,ntott,'Tyms',ifverbose)
+c        call avg2    (Tzms,tz,alpha,beta,ntott,'Tzms',ifverbose)
+         ! Compute averages for gradient velocity invariants ^2     
+         call avg2    (Qams,Qa,alpha,beta,ntot,'Qams',ifverbose)
+         call avg2    (Rams,Ra,alpha,beta,ntot,'Qsms',ifverbose)
+         call avg2    (Qsms,Qs,alpha,beta,ntot,'Rams',ifverbose)
+         call avg2    (Rsms,Rs,alpha,beta,ntot,'Rsms',ifverbose)
+         call avg2    (Qwms,Qw,alpha,beta,ntot,'Qwms',ifverbose)
+         call avg2    (Rwms,Rw,alpha,beta,ntot,'Rwms',ifverbose)
+c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
          do i = 2,ldimt
             call avg2 (trms(1,1,1,1,i),t(1,1,1,1,i),alpha,beta,
      &                 ntott,'psms',ifverbose)
          enddo
 
 c----  Usert test, compute averages E(X^3) 
+         write(*,*) "avg4..."
          call avg4    (u3ms,vx,alpha,beta,ntot ,'u3m ',ifverbose)
          call avg4    (v3ms,vy,alpha,beta,ntot ,'v3m ',ifverbose)
          call avg4    (w3ms,vz,alpha,beta,ntot ,'w3m ',ifverbose)
@@ -1260,6 +1317,7 @@ c----  Usert test, compute averages E(X^3)
          enddo
 
 c----  Usert test, compute averages E(X^4) 
+         write(*,*) "avg5..."
          call avg5    (u4ms,vx,alpha,beta,ntot ,'u4m ',ifverbose)
          call avg5    (v4ms,vy,alpha,beta,ntot ,'v4m ',ifverbose)
          call avg5    (w4ms,vz,alpha,beta,ntot ,'w4m ',ifverbose)
@@ -1271,6 +1329,7 @@ c----  Usert test, compute averages E(X^4)
          enddo
 
          ! compute averages E(X*Y) (for now just for the velocities)
+         write(*,*) "avg3..."
          call avg3    (uvms,vx,vy,alpha,beta,ntot,'uvm ',ifverbose)
          call avg3    (vwms,vy,vz,alpha,beta,ntot,'vwm ',ifverbose)
          call avg3    (wums,vz,vx,alpha,beta,ntot,'wum ',ifverbose)
@@ -1286,14 +1345,34 @@ c-----------------------------------------------------------------------
          time_temp = time
          time      = atime   ! Output the duration of this avg
 
+         ifpo  = .true. ! turn on pressure output
+         ifto  = .true. ! turn on temperature output
+         write(*,*) "Outpost E(X)..."
          call outpost2(uavg,vavg,wavg,pavg,tavg,ldimt,'avg')
+         write(*,*) "Outpost E(X^2)..."
          call outpost2(urms,vrms,wrms,prms,trms,ldimt,'rms')
 c----  User test, output E(X^3),E(X^4)
+         write(*,*) "Outpost E(X^3)..."
          call outpost2(u3ms,v3ms,w3ms,p3ms,t3ms,ldimt,'rm4')
+         write(*,*) "Outpost E(X^4)..."
          call outpost2(u4ms,v4ms,w4ms,p4ms,t4ms,ldimt,'rm5')
 c----  End test
-         call outpost (uvms,vwms,wums,pavg,tavg,      'rm2')
-         call outpost (utms,vtms,wtms,pavg,tavg,      'rm3')
+         ifpo  = .false. ! turn off pressure output
+         ifto  = .false. ! turn off temperature output
+         write(*,*) "Outpost CoV(ui uj)..."
+         call outpost (uvms,vwms,wums,I1,I1,          'rm2')
+         write(*,*) "Outpost CoV(ui T)..."
+         call outpost (utms,vtms,wtms,I1,I1,          'rm3')
+         write(*,*) "Outpost E(X) Q,R ..."
+         call outpost(I1,Qavg,Ravg,I1,I1,'Avg')
+         call outpost(I1,Qsvg,Rsvg,I1,I1,'Svg')
+         call outpost(I1,Qwvg,Rwvg,I1,I1,'Wvg')
+         call outpost(I1,Qams,Rams,I1,I1,'Ams')
+         call outpost(I1,Qsms,Rsms,I1,I1,'Sms')
+         call outpost(I1,Qwms,Rwms,I1,I1,'Wms')
+         call outpost(Txvg,Tyvg,Tzvg,I1,I1,'Nvg')
+c        call outpost(Txms,Tyms,Tzms,I1,I1,'Nms')
+
          atime = 0.
          time  = time_temp  ! Restore clock
 
