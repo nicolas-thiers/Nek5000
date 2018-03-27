@@ -1196,9 +1196,9 @@ c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          do i = 1,ldimt
             call rzero(trms(1,1,1,1,i),ntott)
 c>>>>>>> Usert test, add E(X^2) for temperature gradients >>>>>>>>>>>>
-c           call rzero(Txms(1,1,1,1,i),ntott)
-c           call rzero(Tyms(1,1,1,1,i),ntott)
-c           call rzero(Tzms(1,1,1,1,i),ntott)
+            call rzero(Txms(1,1,1,1,i),ntott)
+            call rzero(Tyms(1,1,1,1,i),ntott)
+            call rzero(Tzms(1,1,1,1,i),ntott)
 c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          enddo
 c>>>>>>> Usert test, add E(X) for velocity gradient invariants >>>>>
@@ -1287,9 +1287,9 @@ c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          call avg2    (prms,pr,alpha,beta,nto2 ,'prms',ifverbose)
          call avg2    (trms,t ,alpha,beta,ntott,'tms ',ifverbose)
 c>>>>>>> Compute averages for temperatures gradients ^2 >>>>>>>>>>>>
-c        call avg2    (Txms,tx,alpha,beta,ntott,'Txms',ifverbose)
-c        call avg2    (Tyms,ty,alpha,beta,ntott,'Tyms',ifverbose)
-c        call avg2    (Tzms,tz,alpha,beta,ntott,'Tzms',ifverbose)
+         call avg2    (Txms,tx,alpha,beta,ntott,'Txms',ifverbose)
+         call avg2    (Tyms,ty,alpha,beta,ntott,'Tyms',ifverbose)
+         call avg2    (Tzms,tz,alpha,beta,ntott,'Tzms',ifverbose)
          ! Compute averages for gradient velocity invariants ^2     
          call avg2    (Qams,Qa,alpha,beta,ntot,'Qams',ifverbose)
          call avg2    (Rams,Ra,alpha,beta,ntot,'Qsms',ifverbose)
@@ -1371,7 +1371,7 @@ c----  End test
          call outpost(I1,Qsms,Rsms,I1,I1,'Sms')
          call outpost(I1,Qwms,Rwms,I1,I1,'Wms')
          call outpost(Txvg,Tyvg,Tzvg,I1,I1,'Nvg')
-c        call outpost(Txms,Tyms,Tzms,I1,I1,'Nms')
+         call outpost(Txms,Tyms,Tzms,I1,I1,'Nms')
 
          atime = 0.
          time  = time_temp  ! Restore clock
