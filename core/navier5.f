@@ -1143,8 +1143,6 @@ c
       save    icalld
       data    icalld  /0/
 
-      write(*,*) "aqui..."
-
       if (ax1.ne.lx1 .or. ay1.ne.ly1 .or. az1.ne.lz1) then
          if(nid.eq.0) write(6,*)
      $     'ABORT: wrong size of ax1,ay1,az1 in avg_all(), check SIZE!'
