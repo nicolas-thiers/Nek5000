@@ -50,7 +50,7 @@ c----           user test, add E(X^2) for invariants
      $               , Qwms(ax1,ay1,az1,lelt)
      $               , Rwms(ax1,ay1,az1,lelt)
 c----           user test, add E(X^2) for temperature gradients 
-c    $               , Txms(ax1,ay1,az1,lelt,ldimt)
-c    $               , Tyms(ax1,ay1,az1,lelt,ldimt)
-c    $               , Tzms(ax1,ay1,az1,lelt,ldimt)
+     $               , Txms(ax1,ay1,az1,lelt,ldimt)
+     $               , Tyms(ax1,ay1,az1,lelt,ldimt)
+     $               , Tzms(ax1,ay1,az1,lelt,ldimt)
 

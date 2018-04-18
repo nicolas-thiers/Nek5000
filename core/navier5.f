@@ -1256,7 +1256,6 @@ c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          beta  = dtime/atime
          alpha = 1.-beta
          ! compute averages E(X)
-         write(*,*) "avg1..."
          call avg1    (uavg,vx,alpha,beta,ntot ,'um  ',ifverbose)
          call avg1    (vavg,vy,alpha,beta,ntot ,'vm  ',ifverbose)
          call avg1    (wavg,vz,alpha,beta,ntot ,'wm  ',ifverbose)
@@ -1280,7 +1279,6 @@ c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          enddo
 
          ! compute averages E(X^2) 
-         write(*,*) "avg2..."
          call avg2    (urms,vx,alpha,beta,ntot ,'ums ',ifverbose)
          call avg2    (vrms,vy,alpha,beta,ntot ,'vms ',ifverbose)
          call avg2    (wrms,vz,alpha,beta,ntot ,'wms ',ifverbose)
@@ -1305,7 +1303,6 @@ c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          enddo
 
 c----  Usert test, compute averages E(X^3) 
-         write(*,*) "avg4..."
          call avg4    (u3ms,vx,alpha,beta,ntot ,'u3m ',ifverbose)
          call avg4    (v3ms,vy,alpha,beta,ntot ,'v3m ',ifverbose)
          call avg4    (w3ms,vz,alpha,beta,ntot ,'w3m ',ifverbose)
@@ -1317,7 +1314,6 @@ c----  Usert test, compute averages E(X^3)
          enddo
 
 c----  Usert test, compute averages E(X^4) 
-         write(*,*) "avg5..."
          call avg5    (u4ms,vx,alpha,beta,ntot ,'u4m ',ifverbose)
          call avg5    (v4ms,vy,alpha,beta,ntot ,'v4m ',ifverbose)
          call avg5    (w4ms,vz,alpha,beta,ntot ,'w4m ',ifverbose)
@@ -1329,7 +1325,6 @@ c----  Usert test, compute averages E(X^4)
          enddo
 
          ! compute averages E(X*Y) (for now just for the velocities)
-         write(*,*) "avg3..."
          call avg3    (uvms,vx,vy,alpha,beta,ntot,'uvm ',ifverbose)
          call avg3    (vwms,vy,vz,alpha,beta,ntot,'vwm ',ifverbose)
          call avg3    (wums,vz,vx,alpha,beta,ntot,'wum ',ifverbose)
@@ -1347,23 +1342,16 @@ c-----------------------------------------------------------------------
 
          ifpo  = .true. ! turn on pressure output
          ifto  = .true. ! turn on temperature output
-         write(*,*) "Outpost E(X)..."
          call outpost2(uavg,vavg,wavg,pavg,tavg,ldimt,'avg')
-         write(*,*) "Outpost E(X^2)..."
          call outpost2(urms,vrms,wrms,prms,trms,ldimt,'rms')
 c----  User test, output E(X^3),E(X^4)
-         write(*,*) "Outpost E(X^3)..."
          call outpost2(u3ms,v3ms,w3ms,p3ms,t3ms,ldimt,'rm4')
-         write(*,*) "Outpost E(X^4)..."
          call outpost2(u4ms,v4ms,w4ms,p4ms,t4ms,ldimt,'rm5')
 c----  End test
          ifpo  = .false. ! turn off pressure output
          ifto  = .false. ! turn off temperature output
-         write(*,*) "Outpost CoV(ui uj)..."
          call outpost (uvms,vwms,wums,I1,I1,          'rm2')
-         write(*,*) "Outpost CoV(ui T)..."
          call outpost (utms,vtms,wtms,I1,I1,          'rm3')
-         write(*,*) "Outpost E(X) Q,R ..."
          call outpost(I1,Qavg,Ravg,I1,I1,'Avg')
          call outpost(I1,Qsvg,Rsvg,I1,I1,'Svg')
          call outpost(I1,Qwvg,Rwvg,I1,I1,'Wvg')
