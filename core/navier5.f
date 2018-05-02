@@ -1358,6 +1358,8 @@ c----  End test
          call outpost(I1,Qwms,Rwms,I1,I1,'Wms')
          call outpost(Txvg,Tyvg,Tzvg,I1,I1,'Nvg')
          call outpost(Txms,Tyms,Tzms,I1,I1,'Nms')
+         ifpo  = .true. ! turn on pressure output
+         ifto  = .true. ! turn on temperature output
 
          atime = 0.
          time  = time_temp  ! Restore clock
