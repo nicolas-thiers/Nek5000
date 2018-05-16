@@ -12,6 +12,11 @@ case $5 in
 		echo  "#PBS -l walltime=10752:00:00"                             	>> $1.batch
 		echo  "#PBS -q mpib"		                                	>> $1.batch
 		;;
+	"cent")
+		echo  "#PBS -l cput=10000:00:00"                                 	>> $1.batch
+		echo  "#PBS -l walltime=10752:00:00"                             	>> $1.batch
+		echo  "#PBS -q cent"		                                	>> $1.batch
+		;;
 	*) 
 		echo "Ingrese un lista valida"
 		;;
@@ -19,6 +24,7 @@ esac
 echo  "#PBS -m abe"                                            				>> $1.batch
 echo  "#PBS -M nicolas.thiers@usm.cl"                  				        >> $1.batch
 echo  cd `pwd`                                                  			>> $1.batch
+echo  "use openmpi"                                                                     >> $1.batch
 echo  "echo" $1      ">"  SESSION.NAME                          			>> $1.batch
 echo  "echo \`pwd\`'/' >> SESSION.NAME"                         			>> $1.batch
 echo  rm -f  $1.his1                                            			>> $1.batch
