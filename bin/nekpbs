@@ -8,8 +8,8 @@ case $5 in
 		echo  "#PBS -q mpi"		                                	>> $1.batch
 		;;
 	"mpib")
-		echo  "#PBS -l cput=11000:00:00"                                 	>> $1.batch
-		echo  "#PBS -l walltime=10752:00:00"                             	>> $1.batch
+		echo  "#PBS -l cput=24000:00:00"                                 	>> $1.batch
+		echo  "#PBS -l walltime=25000:00:00"                             	>> $1.batch
 		echo  "#PBS -q mpib"		                                	>> $1.batch
 		;;
 	"cent")
