@@ -53,4 +53,15 @@ c----           user test, add E(X^2) for temperature gradients
      $               , Txms(ax1,ay1,az1,lelt,ldimt)
      $               , Tyms(ax1,ay1,az1,lelt,ldimt)
      $               , Tzms(ax1,ay1,az1,lelt,ldimt)
+c----           user test, add arrays for Welford variance formula
+     $               , umk_(ax1,ay1,az1,lelt)
+     $               , vmk_(ax1,ay1,az1,lelt)
+     $               , wmk_(ax1,ay1,az1,lelt)
+     $               , tmk_(ax1,ay1,az1,lelt,ldimt)
+     $               , pmk_(ax2,ay2,az2,lelt)
+     $               , usk_(ax1,ay1,az1,lelt)
+     $               , vsk_(ax1,ay1,az1,lelt)
+     $               , wsk_(ax1,ay1,az1,lelt)
+     $               , tsk_(ax1,ay1,az1,lelt,ldimt)
+     $               , psk_(ax2,ay2,az2,lelt)
 

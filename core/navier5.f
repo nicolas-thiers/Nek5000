@@ -1233,8 +1233,6 @@ c>>>>>>> Usert test, add <u'T'> >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             call rzero(vtms(1,1,1,1,i),ntott)
             call rzero(wtms(1,1,1,1,i),ntott)
          enddo
-c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
       endif
 
       dtime = time  - timel
@@ -1254,51 +1252,83 @@ c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          beta  = dtime/atime
          alpha = 1.-beta
          ! compute averages E(X)
-         call avg1    (uavg,vx,alpha,beta,ntot ,'um  ',ifverbose)
-         call avg1    (vavg,vy,alpha,beta,ntot ,'vm  ',ifverbose)
-         call avg1    (wavg,vz,alpha,beta,ntot ,'wm  ',ifverbose)
-         call avg1    (pavg,pr,alpha,beta,nto2 ,'prm ',ifverbose)
-         call avg1    (tavg,t ,alpha,beta,ntott,'tm  ',ifverbose)
+c---- User test... adding Welford formulation
+         call welford (uavg,urms,vx,alpha,beta,ntot ,'varU',ifverbose)
+         call welford (vavg,vrms,vy,alpha,beta,ntot ,'varV',ifverbose)
+         call welford (wavg,wrms,vz,alpha,beta,ntot ,'varW',ifverbose)
+         call welford (pavg,prms,pr,alpha,beta,nto2 ,'varP',ifverbose)
+         call welford (tavg,trms,t ,alpha,beta,ntott,'varT',ifverbose)
+         call welford (Txvg,Txms,tx,alpha,beta,ntott,'Nu x',ifverbose)
+         call welford (Tyvg,Tyms,ty,alpha,beta,ntott,'Nu y',ifverbose)
+         call welford (Tzvg,Tzms,tz,alpha,beta,ntott,'Nu z',ifverbose)
+         call welford (Qavg,Qams,Qa,alpha,beta,ntot ,'Qa  ',ifverbose)
+         call welford (Ravg,Rams,Ra,alpha,beta,ntot ,'Ra  ',ifverbose)
+         call welford (Qsvg,Qsms,Qs,alpha,beta,ntot ,'Qs  ',ifverbose)
+         call welford (Rsvg,Rsms,Rs,alpha,beta,ntot ,'Rs  ',ifverbose)
+         call welford (Qwvg,Qwms,Qw,alpha,beta,ntot ,'Qw  ',ifverbose)
+         call welford (Rwvg,Rwms,Rw,alpha,beta,ntot ,'Rw  ',ifverbose)
+         do i = 2,ldimt
+            call welford (tavg(1,1,1,1,i),trms(1,1,1,1,i),t(1,1,1,1,i),
+     &                 alpha,beta,ntott,'varT',ifverbose)
+         enddo
+         call welford2(uvms,uavg,vavg,vx,vy,alpha,beta,ntot,'uvms'
+     &                 ,ifverbose)
+         call welford2(vwms,vavg,wavg,vy,vz,alpha,beta,ntot,'vwms'
+     &                 ,ifverbose)
+         call welford2(wums,wavg,uavg,vz,vx,alpha,beta,ntot,'uwms'
+     &                 ,ifverbose)
+         call welford2(utms,uavg,tavg,vx,t ,alpha,beta,ntott,'utms'
+     &                 ,ifverbose)
+         call welford2(vtms,vavg,tavg,vy,t ,alpha,beta,ntott,'vtms'
+     &                 ,ifverbose)
+         call welford2(wtms,wavg,tavg,vz,t ,alpha,beta,ntott,'utms'
+     &                 ,ifverbose)
+
+c        call avg1    (uavg,vx,alpha,beta,ntot ,'um  ',ifverbose)
+c        call avg1    (vavg,vy,alpha,beta,ntot ,'vm  ',ifverbose)
+c        call avg1    (wavg,vz,alpha,beta,ntot ,'wm  ',ifverbose)
+c        call avg1    (pavg,pr,alpha,beta,nto2 ,'prm ',ifverbose)
+c        call avg1    (tavg,t ,alpha,beta,ntott,'tm  ',ifverbose)
 c>>>>>>> Compute averages for temperatures gradients >>>>>>>>>>>>>>>
-         call avg1    (Txvg,tx,alpha,beta,ntott,'Txvg',ifverbose)
-         call avg1    (Tyvg,ty,alpha,beta,ntott,'Tyvg',ifverbose)
-         call avg1    (Tzvg,tz,alpha,beta,ntott,'Tzvg',ifverbose)
+c        call avg1    (Txvg,tx,alpha,beta,ntott,'Txvg',ifverbose)
+c        call avg1    (Tyvg,ty,alpha,beta,ntott,'Tyvg',ifverbose)
+c        call avg1    (Tzvg,tz,alpha,beta,ntott,'Tzvg',ifverbose)
          ! Compute averages for gradient velocity invariants        
-         call avg1    (Qavg,Qa,alpha,beta,ntot,'Qavg',ifverbose)
-         call avg1    (Ravg,Ra,alpha,beta,ntot,'Qsvg',ifverbose)
-         call avg1    (Qsvg,Qs,alpha,beta,ntot,'Ravg',ifverbose)
-         call avg1    (Rsvg,Rs,alpha,beta,ntot,'Rsvg',ifverbose)
-         call avg1    (Qwvg,Qw,alpha,beta,ntot,'Qwvg',ifverbose)
-         call avg1    (Rwvg,Rw,alpha,beta,ntot,'Rwvg',ifverbose)
+c        call avg1    (Qavg,Qa,alpha,beta,ntot,'Qavg',ifverbose)
+c        call avg1    (Ravg,Ra,alpha,beta,ntot,'Qsvg',ifverbose)
+c        call avg1    (Qsvg,Qs,alpha,beta,ntot,'Ravg',ifverbose)
+c        call avg1    (Rsvg,Rs,alpha,beta,ntot,'Rsvg',ifverbose)
+c        call avg1    (Qwvg,Qw,alpha,beta,ntot,'Qwvg',ifverbose)
+c        call avg1    (Rwvg,Rw,alpha,beta,ntot,'Rwvg',ifverbose)
 c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-         do i = 2,ldimt
-            call avg1 (tavg(1,1,1,1,i),t(1,1,1,1,i),alpha,beta,
-     &                 ntott,'psav',ifverbose)
-         enddo
-
-         ! compute averages E(X^2) 
-         call avg2    (urms,vx,alpha,beta,ntot ,'ums ',ifverbose)
-         call avg2    (vrms,vy,alpha,beta,ntot ,'vms ',ifverbose)
-         call avg2    (wrms,vz,alpha,beta,ntot ,'wms ',ifverbose)
-         call avg2    (prms,pr,alpha,beta,nto2 ,'prms',ifverbose)
-         call avg2    (trms,t ,alpha,beta,ntott,'tms ',ifverbose)
+c        do i = 2,ldimt
+c           call avg1 (tavg(1,1,1,1,i),t(1,1,1,1,i),alpha,beta,
+c    &                 ntott,'psav',ifverbose)
+c        enddo
+c
+c        ! compute averages E(X^2) 
+c        call avg2    (urms,vx,alpha,beta,ntot ,'ums ',ifverbose)
+c        call avg2    (vrms,vy,alpha,beta,ntot ,'vms ',ifverbose)
+c        call avg2    (wrms,vz,alpha,beta,ntot ,'wms ',ifverbose)
+c        call avg2    (prms,pr,alpha,beta,nto2 ,'prms',ifverbose)
+c        call avg2    (trms,t ,alpha,beta,ntott,'tms ',ifverbose)
 c>>>>>>> Compute averages for temperatures gradients ^2 >>>>>>>>>>>>
-         call avg2    (Txms,tx,alpha,beta,ntott,'Txms',ifverbose)
-         call avg2    (Tyms,ty,alpha,beta,ntott,'Tyms',ifverbose)
-         call avg2    (Tzms,tz,alpha,beta,ntott,'Tzms',ifverbose)
-         ! Compute averages for gradient velocity invariants ^2     
-         call avg2    (Qams,Qa,alpha,beta,ntot,'Qams',ifverbose)
-         call avg2    (Rams,Ra,alpha,beta,ntot,'Qsms',ifverbose)
-         call avg2    (Qsms,Qs,alpha,beta,ntot,'Rams',ifverbose)
-         call avg2    (Rsms,Rs,alpha,beta,ntot,'Rsms',ifverbose)
-         call avg2    (Qwms,Qw,alpha,beta,ntot,'Qwms',ifverbose)
-         call avg2    (Rwms,Rw,alpha,beta,ntot,'Rwms',ifverbose)
+c        call avg2    (Txms,tx,alpha,beta,ntott,'Txms',ifverbose)
+c        call avg2    (Tyms,ty,alpha,beta,ntott,'Tyms',ifverbose)
+c        call avg2    (Tzms,tz,alpha,beta,ntott,'Tzms',ifverbose)
+c        ! Compute averages for gradient velocity invariants ^2     
+c        call avg2    (Qams,Qa,alpha,beta,ntot,'Qams',ifverbose)
+c        call avg2    (Rams,Ra,alpha,beta,ntot,'Qsms',ifverbose)
+c        call avg2    (Qsms,Qs,alpha,beta,ntot,'Rams',ifverbose)
+c        call avg2    (Rsms,Rs,alpha,beta,ntot,'Rsms',ifverbose)
+c        call avg2    (Qwms,Qw,alpha,beta,ntot,'Qwms',ifverbose)
+c        call avg2    (Rwms,Rw,alpha,beta,ntot,'Rwms',ifverbose)
 c<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-         do i = 2,ldimt
-            call avg2 (trms(1,1,1,1,i),t(1,1,1,1,i),alpha,beta,
-     &                 ntott,'psms',ifverbose)
-         enddo
+c
+c        do i = 2,ldimt
+c           call avg2 (trms(1,1,1,1,i),t(1,1,1,1,i),alpha,beta,
+c    &                 ntott,'psms',ifverbose)
+c        enddo
 
 c----  Usert test, compute averages E(X^3) 
          call avg4    (u3ms,vx,alpha,beta,ntot ,'u3m ',ifverbose)
@@ -1311,7 +1341,7 @@ c----  Usert test, compute averages E(X^3)
      &                 ntott,'ps3m',ifverbose)
          enddo
 
-c----  Usert test, compute averages E(X^4) 
+c----  User test, compute averages E(X^4) 
          call avg5    (u4ms,vx,alpha,beta,ntot ,'u4m ',ifverbose)
          call avg5    (v4ms,vy,alpha,beta,ntot ,'v4m ',ifverbose)
          call avg5    (w4ms,vz,alpha,beta,ntot ,'w4m ',ifverbose)
@@ -1322,14 +1352,14 @@ c----  Usert test, compute averages E(X^4)
      &                 ntott,'ps4m',ifverbose)
          enddo
 
-         ! compute averages E(X*Y) (for now just for the velocities)
-         call avg3    (uvms,vx,vy,alpha,beta,ntot,'uvm ',ifverbose)
-         call avg3    (vwms,vy,vz,alpha,beta,ntot,'vwm ',ifverbose)
-         call avg3    (wums,vz,vx,alpha,beta,ntot,'wum ',ifverbose)
-         ! user test... adding <u'T'>, <v'T'> and <w'T'>
-         call avg3    (utms,vx,t ,alpha,beta,ntott,'utm ',ifverbose)
-         call avg3    (vtms,vy,t ,alpha,beta,ntott,'vtm ',ifverbose)
-         call avg3    (wtms,vz,t ,alpha,beta,ntott,'wtm ',ifverbose)
+c        ! compute averages E(X*Y) (for now just for the velocities)
+c        call avg3    (uvms,vx,vy,alpha,beta,ntot,'uvm ',ifverbose)
+c        call avg3    (vwms,vy,vz,alpha,beta,ntot,'vwm ',ifverbose)
+c        call avg3    (wums,vz,vx,alpha,beta,ntot,'wum ',ifverbose)
+c---- User test... adding <u'T'>, <v'T'> and <w'T'>
+c        call avg3    (utms,vx,t ,alpha,beta,ntott,'utm ',ifverbose)
+c        call avg3    (vtms,vy,t ,alpha,beta,ntott,'vtm ',ifverbose)
+c        call avg3    (wtms,vz,t ,alpha,beta,ntott,'wtm ',ifverbose)
       endif
 c
 c-----------------------------------------------------------------------
@@ -1481,6 +1511,68 @@ c
          if (nio.eq.0) write(6,1) istep,time,avgmin,avgmax
      $                           ,alpha,beta,name
     1    format(i9,1p5e13.5,1x,a4,' av3mnx')
+      endif
+c
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine welford(avg,var,f,alpha,beta,n,name,ifverbose)
+c     This subroutine computes the average anf the variance of X 
+c     using the welford formulation
+
+      include 'SIZE'
+      include 'TSTEP'
+c
+      real avg(n),var(n),f(n)
+      real avg0(n)
+      character*4 name
+      logical ifverbose
+c
+      do k=1,n
+         avg0(k) = avg(k)
+         avg(k) = alpha*avg(k) + beta*f(k)
+         var(k) = alpha*var(k) + beta*(f(k)-avg0(k))*(f(k)-avg(k))
+      enddo
+c
+      if (ifverbose) then
+c        avgmax = glmax(avg,n)
+c        avgmin = glmin(avg,n)
+c        if (nio.eq.0) write(6,1) istep,time,avgmin,avgmax
+c    $                           ,alpha,beta,name
+c   1    format(i9,1p5e13.5,1x,a4,' av1mnx')
+      endif
+c
+      return
+      end
+c-----------------------------------------------------------------------
+      subroutine welford2(cov,avgf,avgg,f,g,alpha,beta,n,name,ifverbose)
+c     This subroutine computes the covariance of f and g  
+c     using the welford formulation
+
+      include 'SIZE'
+      include 'TSTEP'
+c
+      real cov(n),avgf(n),avgg(n),f(n),g(n)
+      real avgf0(n)
+      character*4 name
+      logical ifverbose
+c
+      do k=1,n
+         if (alpha.eq.0) then
+           avgf0(k) = avgf(k)
+         else
+           avgf0(k) = (avgf(k) - beta*f(k))/alpha     !average of the
+         endif
+c                                                    previous time-step
+         cov(k) = alpha*cov(k) + beta*(f(k)-avgf0(k))*(g(k)-avgg(k))
+      enddo
+c
+      if (ifverbose) then
+c        avgmax = glmax(avg,n)
+c        avgmin = glmin(avg,n)
+c        if (nio.eq.0) write(6,1) istep,time,avgmin,avgmax
+c    $                           ,alpha,beta,name
+c   1    format(i9,1p5e13.5,1x,a4,' av1mnx')
       endif
 c
       return
