@@ -1,19 +1,14 @@
 #!/bin/bash
-
+#code path
+NEKPATH="/user/n/nthiers/Nek5000/v15"
 # binary path
-mkdir -p $(pwd)/bin
-bin_nek_tools="$(pwd)/bin"
-
+bin_nek_tools=${NEKPATH}/bin
 # specify your compilers here
 F77="gfortran"
 CC="gcc"
-
 # enable BIG MEMORY suuport
 BIGMEM="true"
-
-
-
-
+mkdir -p ${NEKPATH}/bin
 
 
 
