@@ -1,0 +1,47 @@
+echo  "#!/bin/bash"                                             			> $1.batch
+echo  "#PBS -N " $4                               			                >> $1.batch
+echo  "#PBS -l nodes="$2":ppn="$3                              				>> $1.batch
+case $5 in
+	"mpi")
+		echo  "#PBS -l cput=768:00:00"                                 		>> $1.batch
+		echo  "#PBS -l walltime=780:00:00"                             		>> $1.batch
+		echo  "#PBS -q mpi"		                                	>> $1.batch
+		;;
+	"mpib")
+		echo  "#PBS -l cput=24000:00:00"                                 	>> $1.batch
+		echo  "#PBS -l walltime=25000:00:00"                             	>> $1.batch
+		echo  "#PBS -q mpib"		                                	>> $1.batch
+		;;
+	"cent")
+		echo  "#PBS -l cput=10000:00:00"                                 	>> $1.batch
+		echo  "#PBS -l walltime=10752:00:00"                             	>> $1.batch
+		echo  "#PBS -q cent"		                                	>> $1.batch
+		;;
+	*) 
+		echo "Ingrese un lista valida"
+		;;
+esac
+echo  "#PBS -m abe"                                            				>> $1.batch
+echo  "#PBS -M nicolas.thiers@usm.cl"                  				        >> $1.batch
+echo  cd `pwd`                                                  			>> $1.batch
+echo  "use openmpi"                                                                     >> $1.batch
+echo  "echo" $1      ">"  SESSION.NAME                          			>> $1.batch
+echo  "echo \`pwd\`'/' >> SESSION.NAME"                         			>> $1.batch
+echo  rm -f  $1.his1                                            			>> $1.batch
+echo  rm -f  $1.sch1                                            			>> $1.batch
+echo  rm -f  $1.log1                                            			>> $1.batch
+echo  mv $1.log $1.log1                                         			>> $1.batch
+echo  mv $1.his $1.his1                                         			>> $1.batch
+echo  mv $1.sch $1.sch1                                         			>> $1.batch
+echo  rm -f logfile                                             			>> $1.batch
+echo  rm -f ioinfo                                              			>> $1.batch
+echo  sleep 5
+let mul=$2*$3
+echo $mul
+echo  mpiexec -np $mul ./nek5000 $1 ">" $1.log                                          >> $1.batch
+echo  sleep 5                                                   			>> $1.batch
+echo  ln $1.log logfile                                         			>> $1.batch
+echo  "exit 0;"                                                 			>> $1.batch
+qsub $1.batch
+sleep 1
+watch -n 1 qstat -u nthiers
